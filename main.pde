@@ -1,8 +1,6 @@
 import java.util.Collections;
 import java.util.Iterator;
 
-int DINOS_PER_GENERATION = 1000;
-
 HashMap<String, PImage> game_sprites = new HashMap<String, PImage>();
 
 Simulation simulation;

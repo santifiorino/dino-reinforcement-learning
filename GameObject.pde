@@ -6,7 +6,7 @@ abstract class GameObject {
   int[] sprite_offset = {0, 0};
   
   void print() {
-    fill(0);
+    // fill(0);
     // rect(x_pos, y_pos, obj_width, obj_height); // hitbox
     image(game_sprites.get(sprite), x_pos + sprite_offset[0], y_pos + sprite_offset[1]);
   }
@@ -27,7 +27,7 @@ class Ground extends GameObject {
     y_pos = 515;
     sprite = "ground";
   }
-  
+
   void update(int speed) {
     x_pos -= speed;
     if (x_pos <= 0) {
