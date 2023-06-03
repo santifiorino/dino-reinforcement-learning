@@ -30,10 +30,6 @@ void draw() {
       // every 0.25 seconds
       simulation.quarter_of_second();
     }
-    if (clock % 20 == 0){
-      // every 1 second
-      simulation.second();
-    }
   }
 }
 

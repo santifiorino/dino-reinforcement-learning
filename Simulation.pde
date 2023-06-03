@@ -1,4 +1,6 @@
 int DINOS_PER_GENERATION = 1000;
+float MIN_SPAWN_MILLIS = 500;
+float MAX_SPAWN_MILLIS = 1500;
 
 class Simulation {
   ArrayList<Dino> dinos;
@@ -10,6 +12,10 @@ class Simulation {
   int last_gen_avg_score;
   int last_gen_max_score;
   int dinos_alive;
+
+  // to control enemies spawn time
+  float last_spawn_time;
+  float time_to_spawn;
   
   Simulation() {
     dinos = new ArrayList<Dino>();
@@ -24,11 +30,15 @@ class Simulation {
     last_gen_avg_score = 0;
     last_gen_max_score = 0;
     dinos_alive = DINOS_PER_GENERATION;
+    last_spawn_time = millis();
+    time_to_spawn = random(MIN_SPAWN_MILLIS, MAX_SPAWN_MILLIS);
   }
   
   void update() {
     for (Dino dino : dinos) {
-      dino.update(next_obstacle_info(dino), (int)speed);
+      if (dino.alive){
+        dino.update(next_obstacle_info(dino), (int)speed);
+      }
     }
     Iterator<Enemy> iterator = enemies.iterator();
     while (iterator.hasNext()) {
@@ -37,6 +47,11 @@ class Simulation {
       if (enemy.is_offscreen()) {
         iterator.remove();
       }
+    }
+    if (millis() - last_spawn_time > time_to_spawn) {
+      spawn_enemy();
+      last_spawn_time = millis();
+      time_to_spawn = random(MIN_SPAWN_MILLIS, MAX_SPAWN_MILLIS);
     }
     check_collisions();
     ground.update((int)speed);
@@ -134,10 +149,10 @@ class Simulation {
     for (Dino dino : dinos) {
       dino.print();
     }
-    display_info();
+    print_info();
   }
   
-  void display_info(){
+  void print_info(){
     fill(0);
     textSize(30);
     text(score, 1200, 80);
@@ -145,11 +160,23 @@ class Simulation {
     text("Average Score (last gen): " + last_gen_avg_score, 80, 120);
     text("Max Score (last gen): " + last_gen_max_score, 80, 160);
     text("Alive: " + dinos_alive, 80, 200);
+    print_network();
+  }
+  
+  void print_network() {
+    for (Dino dino : dinos) {
+      if (dino.alive) {
+        dino.brain.print();
+        break;
+      }
     }
+  }
   
   void tenth_of_second() {
     for (Dino dino : dinos) {
-      dino.toggle_sprite();
+      if (dino.alive) {
+        dino.toggle_sprite();
+      }
     }
     score++;
   }
@@ -160,7 +187,7 @@ class Simulation {
     }
   }
 
-  void second() {
+  void spawn_enemy() {
     if (random(1) < 0.5) {
       enemies.add(new Cactus());
     } else {

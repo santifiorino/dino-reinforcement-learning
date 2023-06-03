@@ -13,7 +13,7 @@ class Gen {
     } else {
       id_target_neuron = (int)random(0, 2);
     }
-    weight = random(-1000, 1000);
+    weight = random(-1, 1);
   }
   
 }
